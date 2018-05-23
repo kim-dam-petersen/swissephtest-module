@@ -1,0 +1,23 @@
+: Create a Runnable Java Module Jar File.
+
+echo "Copy Dependency Java Module Jar Files"
+mkdir mods
+cp ../swisseph/mods/swisseph.jar mods/
+
+echo "Compile Java Source"
+del /s /q out
+javac -d out -g -Xlint:deprecation --module-path mods --module swissephtest --module-source-path src/main/java
+
+echo "Generate Java Doc"
+javadoc -html5 -Xdoclint:none --source-path src/main/java/swissephtest -d docs --module swissephtest --module-path mods
+
+echo "Package Jar File"
+del mods/swissephtest.jar
+jar --create --file mods/swissephtest.jar --main-class swissephtest.Swetest -C out/swissephtest/ . -C src/main/java/swissephtest .
+
+
+echo "Run Test"
+java --module-path mods --module swissephtest -h
+java --module-path mods --module swissephtest -edir/SwissEphemeris -b29.12.1958 -ut3.22 -house12.18,55.44,p -pd
+
+echo "Java Doc and Jar Created"
